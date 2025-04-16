@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider = "prisma-client-js"
+    previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DATABASE_URL")
+}
+
+model Role {
+    id          Int     @id @default(autoincrement())
+    code        String
+    name        String
+    description String?
+}
+
+model Sport {
+    id              Int     @id @default(autoincrement())
+    name            String
+    sectionCount    Int
+    defaultDuration Int
+    description     String?
+    positions       SportPosition[]
+    teams           Team[]
+}
+
+model SportPosition {
+    id          Int     @id @default(autoincrement())
+    sportId     Int
+    code        String
+    name        String
+    description String?
+    left        String?
+    right       String?
+    top         String?
+    bottom      String?
+    sport       Sport?  @relation(fields: [sportId], references: [id])
+
+    @@map("sport_position")
+}
+
+model Team {
+    id             Int     @id @default(autoincrement())
+    sportId        Int
+    name           String
+    coach          String?
+    coordinatorId  Int
+    createdAt      DateTime @default(now())
+    sport          Sport?  @relation(fields: [sportId], references: [id])
+    coordinator    User?  @relation(fields: [coordinatorId], references: [id])
+    members    TeamMember[]
+    events      Event[]
+}
+
+model TeamMember {
+    id             Int     @id @default(autoincrement())
+    teamId         Int
+    name           String
+    positions      String
+    JoinedAt       DateTime @default(now())
+    team           Team?  @relation(fields: [teamId], references: [id])
+
+    @@map("team_member")
+}
+
+model User {
+    id          Int     @id @default(autoincrement())
+    firstName    String
+    lastName     String
+    email        String  @unique
+    password     String
+    roleId       Int
+    createdAt    DateTime @default(now())
+    teams        Team[]
+}
+
+model EventType {
+    id          Int     @id @default(autoincrement())
+    name        String
+    text        String?
+    description String?
+    events   Event[]
+
+    @@map("event_type")
+}
+
+model Event {
+    id            Int     @id @default(autoincrement())
+    typeId        Int
+    teamId        Int
+    opponent      String?
+    location      String?
+    date          DateTime?
+    duration      Int?
+    createdAt     DateTime? @default(now())
+    type          EventType?  @relation(fields: [typeId], references: [id])
+    team          Team?  @relation(fields: [teamId], references: [id])
+    trainingItems TrainingItem[]
+    eventSections EventSection[]
+}
+
+model EventSection {
+    id             Int     @id @default(autoincrement())
+    eventId        Int
+    sectionNumber  Int
+    name           String
+    currentSeconds Int @default(0)
+    finished       Boolean @default(false)
+    event          Event?  @relation(fields: [eventId], references: [id])
+}
+
+model TrainingItem {
+    id          Int     @id @default(autoincrement())
+    eventId  Int
+    name        String
+    duration    Int
+    notes       String?
+    event    Event?  @relation(fields: [eventId], references: [id])
+
+    @@map("training_item")
+}
+
+model StatType {
+    id          Int     @id @default(autoincrement())
+    code        String
+    name        String
+    good        Boolean @default(false)
+    always      Boolean @default(false)
+    @@map("stat_type")
+}
