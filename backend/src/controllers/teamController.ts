@@ -1,45 +1,26 @@
-import { Request, ResponseToolkit, ResponseObject } from '@hapi/hapi'
 import TeamRepository from '../repository/teamRepository'
 import TeamMemberRepository from '../repository/teamMemberRepository'
 import { ITeam, IUser } from '../utils/constants'
 import Boom from '@hapi/boom'
+import { controllerWrapper } from '../utils/controllerWrapper'
 
 const teamRepository = new TeamRepository()
 const teamMemberRepository = new TeamMemberRepository()
 
-export async function fetchTeamsList( 
-    request: Request,
-    h: ResponseToolkit
-): Promise<ResponseObject> {
-    try {
-        let { id } = <IUser>request.auth.credentials.user
-        const teams = await teamRepository.fetchAllTeamsByCoordinator(id)
-        return h
-            .response({
-                data: teams.map((team: any) => ({
-                    ...team,
-                    members: team.members.map((member: any) => ({
-                        ...member,
-                        positions: JSON.parse(member.positions)
-                    }))
-                })),
-                message: 'success',
-                status: 200,
-            })
-            .code(200)
-    
-    } catch (error) {
-        console.log(error)
-        return h
-            .response({ message: 'Oops!! Something Went Wrong', status: 500 })
-            .code(500)
-  }
-}
+export const fetchTeamsList = controllerWrapper(async (request) => {
+    let { id } = <IUser>request.auth.credentials.user
+    const teams = await teamRepository.fetchAllTeamsByCoordinator(id)
 
-export async function create(
-    request: Request,
-    h: ResponseToolkit
-): Promise<ResponseObject> {
+    return teams.map((team: any) => ({
+        ...team,
+        members: team.members.map((member: any) => ({
+            ...member,
+            positions: JSON.parse(member.positions)
+        }))
+    }))
+})
+
+export const create = controllerWrapper(async (request) => {
     const { name, coach, members } = <ITeam>request.payload
     let { id } = <IUser>request.auth.credentials.user
     const team = await teamRepository.create(1, name, coach || '', id)
@@ -48,19 +29,10 @@ export async function create(
 
     await alterTeamMembers(id, team.id, members)
 
-    return h
-            .response({
-                data: team,
-                message: 'success',
-                status: 200,
-            })
-            .code(200)
-}
+    return team
+})
 
-export async function update(
-    request: Request,
-    h: ResponseToolkit
-): Promise<ResponseObject> {
+export const update = controllerWrapper(async (request) => {
     let { id } = <IUser>request.auth.credentials.user
     let teamId: number = Number(request.params.teamId | 0)
     const { name, coach, members } = <ITeam>request.payload
@@ -70,14 +42,8 @@ export async function update(
 
     await alterTeamMembers(id, teamId, members)
 
-    return h
-            .response({
-                data: team,
-                message: 'success',
-                status: 200,
-            })
-            .code(200)
-}
+    return team
+})
 
 async function alterTeamMembers(id: number | undefined, teamId: number, members: any) {
     if (!members || members.length === 0) {

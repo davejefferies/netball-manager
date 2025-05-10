@@ -1,4 +1,6 @@
+import { Request } from '@hapi/hapi'
 import Boom from '@hapi/boom'
+import { Event, EventLog, EventPlayer, EventType } from '@prisma/client'
 import EventRepository from '../repository/eventRepository'
 import { controllerWrapper } from '../utils/controllerWrapper'
 
@@ -8,14 +10,14 @@ export const fetchEventTypes = controllerWrapper(async () => {
     return await eventRepository.fetchEventTypes()
 })
 
-export const fetchEvents = controllerWrapper(async (request) => {
-    const teamId = Number(request.params.teamId || 0)
+export const fetchEvents = controllerWrapper(async (request: Request) => {
+    const teamId: number = Number(request.params.teamId || 0)
     return await eventRepository.fetchAllEventsByTeam(teamId)
 })
 
-export const create = controllerWrapper(async (request) => {
-    const teamId = Number(request.params.teamId || 0)
-    const { type, opponent, date, location, duration, frequencyId, endDate } = request.payload as any
+export const create = controllerWrapper(async (request: Request) => {
+    const teamId: number = Number(request.params.teamId || 0)
+    const { type, opponent, date, location, duration } = request.payload as any
 
     const result = await eventRepository.create(type, teamId, opponent, date, location, duration)
     if (!result?.id) throw Boom.badRequest('An error occurred while creating the Schedule')
@@ -23,12 +25,37 @@ export const create = controllerWrapper(async (request) => {
     return result
 })
 
-export const update = controllerWrapper(async (request) => {
-    const id = Number(request.params.id || 0)
-    const { typeId, opponent, date, location, duration, frequencyId, endDate } = request.payload as any
+export const update = controllerWrapper(async (request: Request) => {
+    const id: number = Number(request.params.id || 0)
+    const { typeId, opponent, date, location, duration } = request.payload as any
 
     const result = await eventRepository.update(id, typeId, opponent, date, location, duration)
     if (!result?.id) throw Boom.badRequest('An error occurred while updating the Schedule')
 
     return result
+})
+
+export const assignEventPlayer = controllerWrapper(async (request: Request) => {
+    const eventId: number = Number(request.params.eventId || 0)
+    const { position, player } = request.payload as any
+    const result = await eventRepository.assignPlayer(eventId, position, player)
+
+    if (!result?.id) throw Boom.badRequest('An error occurred while assigning the player to a position.')
+
+    return result
+})
+
+export const createEventLogItem = controllerWrapper(async (request: Request) => {
+    const eventId: number = Number(request.params.eventId || 0)
+    const { codeId, positionId, playerId, period } = request.payload as any
+    const result = await eventRepository.addEventLog(eventId, codeId, period, positionId, playerId)
+
+    if (!result?.id) throw Boom.badRequest('An error occurred while add to the event log.')
+
+    return result
+})
+
+export const fetchEventLogByEvent = controllerWrapper(async (request: Request) => {
+    const eventId: number = Number(request.params.eventId || 0)
+    return await eventRepository.fetchEventLogByEvent(eventId)
 })

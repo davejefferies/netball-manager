@@ -1,16 +1,33 @@
 import { ServerRoute } from '@hapi/hapi'
-import Joi from 'joi'
 import {
-    fetchStatType
+    fetchShootingStats,
+    fetchScoringStats,
+    fetchReboundStats
 } from '../controllers/statController'
 
 const statRoutes: ServerRoute[] = [
     {
         method: 'GET',
-        path: '/stat/type',
+        path: '/team/{teamId}/event/{eventId}/stats/score',
         options: {
             auth: 'token',
-            handler: fetchStatType
+            handler: fetchScoringStats
+        }
+    },
+    {
+        method: 'GET',
+        path: '/team/{teamId}/event/{eventId}/stats/shooting',
+        options: {
+            auth: 'token',
+            handler: fetchShootingStats
+        }
+    },
+    {
+        method: 'GET',
+        path: '/team/{teamId}/event/{eventId}/stats/rebound',
+        options: {
+            auth: 'token',
+            handler: fetchReboundStats
         }
     }
 ]

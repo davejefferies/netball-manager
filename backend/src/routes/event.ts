@@ -1,10 +1,12 @@
 import { ServerRoute } from '@hapi/hapi'
-import Joi from 'joi'
 import {
     fetchEventTypes,
     fetchEvents,
     create,
-    update
+    update,
+    assignEventPlayer,
+    createEventLogItem,
+    fetchEventLogByEvent
 } from '../controllers/eventController'
 
 const scheduleRoutes: ServerRoute[] = [
@@ -38,6 +40,30 @@ const scheduleRoutes: ServerRoute[] = [
         options: {
             auth: 'token',
             handler: update
+        }
+    },
+    {
+        method: 'POST',
+        path: '/team/{teamId}/event/{eventId}/player',
+        options: {
+            auth: 'token',
+            handler: assignEventPlayer
+        }
+    },
+    {
+        method: 'POST',
+        path: '/team/{teamId}/event/{eventId}/log',
+        options: {
+            auth: 'token',
+            handler: createEventLogItem
+        }
+    },
+    {
+        method: 'GET',
+        path: '/team/{teamId}/event/{eventId}/log',
+        options: {
+            auth: 'token',
+            handler: fetchEventLogByEvent
         }
     }
 ]

@@ -10,16 +10,15 @@ export function controllerWrapper<T>(handler: HandlerFunction<T>) {
             return h.response({
                 data: result,
                 message: 'success',
-                status: 200,
+                status: 200
             }).code(200)
         } catch (error: any) {
-            console.error(error)
             if (Boom.isBoom(error)) {
                 throw error
             }
             return h.response({
                 message: error?.message || 'Oops!! Something went wrong',
-                status: 500,
+                status: 500
             }).code(500)
         }
     }

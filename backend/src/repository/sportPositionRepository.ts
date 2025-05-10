@@ -16,4 +16,30 @@ export default class SportPositionRepository {
 
         return positions
     }
+
+    async fetchPositionsBySportEvent(id: number, eventId: number) {
+        const positions = await db.sportPosition.findMany({
+            where: {
+                sportId: {
+                    equals: id
+                }
+            },
+            relationLoadStrategy: 'join',
+            include: {
+                sport: true,
+                eventPlayers: {
+                    where: {
+                        eventId: {
+                            equals: eventId
+                        }
+                    },
+                    include: {
+                        player: true
+                    }
+                }
+            }
+        })
+
+        return positions
+    }
 }

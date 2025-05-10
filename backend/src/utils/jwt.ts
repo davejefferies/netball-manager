@@ -1,4 +1,4 @@
-import {JwtPayload, sign, SignOptions, verify} from 'jsonwebtoken'
+import {JwtPayload, sign, verify} from 'jsonwebtoken'
 import { IUser } from './constants'
 
 export const createAccessToken = (user: IUser) => {

@@ -33,18 +33,7 @@ const teamRoutes: ServerRoute[] = [
         path: '/team/{teamId}',
         options: {
             auth: 'token',
-            handler: update,
-            /*validate: {
-                payload: Joi.object({
-                    name: Joi.string().required(),
-                    coach: Joi.string(),
-                    members: Joi.array().items(Joi.object({
-                        id: Joi.number().optional(),
-                        name: Joi.string().required(),
-                        positions: Joi.string().required()
-                    }))
-                })
-            }*/
+            handler: update
         }
     }
 ]

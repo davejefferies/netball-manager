@@ -29,19 +29,22 @@ model Sport {
     description     String?
     positions       SportPosition[]
     teams           Team[]
+    statTypes       SportStatType[]
 }
 
 model SportPosition {
-    id          Int     @id @default(autoincrement())
-    sportId     Int
-    code        String
-    name        String
-    description String?
-    left        String?
-    right       String?
-    top         String?
-    bottom      String?
-    sport       Sport?  @relation(fields: [sportId], references: [id])
+    id            Int     @id @default(autoincrement())
+    sportId       Int
+    code          String
+    name          String
+    description   String?
+    left          String?
+    right         String?
+    top           String?
+    bottom        String?
+    sport         Sport?  @relation(fields: [sportId], references: [id])
+    eventPlayers  EventPlayer[]
+    eventLogs     EventLog[]
 
     @@map("sport_position")
 }
@@ -66,19 +69,21 @@ model TeamMember {
     positions      String
     JoinedAt       DateTime @default(now())
     team           Team?  @relation(fields: [teamId], references: [id])
+    eventPlayers   EventPlayer[]
+    eventLogItems  EventLog[]
 
     @@map("team_member")
 }
 
 model User {
-    id          Int     @id @default(autoincrement())
-    firstName    String
-    lastName     String
-    email        String  @unique
-    password     String
-    roleId       Int
-    createdAt    DateTime @default(now())
-    teams        Team[]
+    id            Int     @id @default(autoincrement())
+    firstName     String
+    lastName      String
+    email         String  @unique
+    password      String
+    roleId        Int
+    createdAt     DateTime @default(now())
+    teams         Team[]
 }
 
 model EventType {
@@ -104,6 +109,8 @@ model Event {
     team          Team?  @relation(fields: [teamId], references: [id])
     trainingItems TrainingItem[]
     eventSections EventSection[]
+    eventPlayers  EventPlayer[]
+    eventLogs     EventLog[]
 }
 
 model EventSection {
@@ -127,11 +134,44 @@ model TrainingItem {
     @@map("training_item")
 }
 
-model StatType {
+model EventPlayer {
+    id             Int     @id @default(autoincrement())
+    eventId        Int
+    positionId     Int
+    memberId       Int
+    createdAt      DateTime? @default(now())
+    event          Event?  @relation(fields: [eventId], references: [id])
+    position       SportPosition?  @relation(fields: [positionId], references: [id])
+    player         TeamMember?  @relation(fields: [memberId], references: [id])
+
+    @@map("event_player")
+}
+
+model SportStatType {
+    id        Int     @id @default(autoincrement())
+    code      String
+    name      String
+    stat      Boolean @default(false)
+    penalty   Boolean @default(false)
+    sportId   Int
+    sport     Sport? @relation(fields: [sportId], references: [id])
+    eventLogs EventLog[]
+
+    @@map("sport_stat_type")
+}
+
+model EventLog {
     id          Int     @id @default(autoincrement())
-    code        String
-    name        String
-    good        Boolean @default(false)
-    always      Boolean @default(false)
-    @@map("stat_type")
+    eventId     Int
+    positionId  Int?
+    codeId      Int
+    playerId    Int?
+    period      Int?
+    createdAt   DateTime? @default(now())
+    event       Event? @relation(fields: [eventId], references: [id])
+    position    SportPosition? @relation(fields: [positionId], references: [id])
+    code        SportStatType? @relation(fields: [codeId], references: [id])
+    player      TeamMember? @relation(fields: [playerId], references: [id])
+
+    @@map("event_log")
 }

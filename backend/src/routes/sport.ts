@@ -1,8 +1,9 @@
 import { ServerRoute } from '@hapi/hapi'
-import Joi from 'joi'
 import {
     fetchSportList,
-    fetchSportPositionList
+    fetchSportPositionList,
+    fetchSportPositionListBySportEvent,
+    fetchSportStatItems
 } from '../controllers/sportController'
 
 const sportRoutes: ServerRoute[] = [
@@ -20,6 +21,22 @@ const sportRoutes: ServerRoute[] = [
         options: {
             auth: 'token',
             handler: fetchSportPositionList
+        }
+    }, 
+    {
+        method: 'GET',
+        path: '/sport/{sportId}/event/{eventId}/position',
+        options: {
+            auth: 'token',
+            handler: fetchSportPositionListBySportEvent
+        }
+    },
+    {
+        method: 'GET',
+        path: '/sport/{sportId}/stat',
+        options: {
+            auth: 'token',
+            handler: fetchSportStatItems
         }
     }
 ]

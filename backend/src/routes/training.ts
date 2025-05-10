@@ -1,5 +1,4 @@
 import { ServerRoute } from '@hapi/hapi'
-import Joi from 'joi'
 import {
     fetchTrainingItems,
     create,
