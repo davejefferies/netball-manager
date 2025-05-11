@@ -5,7 +5,8 @@
     "license": "MIT",
     "scripts": {
         "start": "ts-node-dev src/index.ts",
-        "prisma:generate": "npx prisma generate"
+        "prisma:generate": "npx prisma generate",
+        "prod:start": "./scripts/deploy.sh"
     },
     "dependencies": {
         "@hapi/boom": "^10.0.1",

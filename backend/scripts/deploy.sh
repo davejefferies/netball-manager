@@ -3,7 +3,7 @@
 # Exit immediately on error
 set -e
 
-DEPLOY_DIR="../app"
+DEPLOY_DIR="../server"
 
 echo "📦 Installing dependencies..."
 npm install
@@ -27,7 +27,4 @@ cp package.json $DEPLOY_DIR/
 cp -r prisma $DEPLOY_DIR/
 cp .env $DEPLOY_DIR/ 2>/dev/null || echo "⚠️ No .env file to copy"
 
-#echo "🚀 Starting server from deploy directory..."
-#cd $DEPLOY_DIR
-#npm install --omit=dev
-#ode server.js
+cp -r node_modules $DEPLOY_DIR/
