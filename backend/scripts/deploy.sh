@@ -3,7 +3,7 @@
 # Exit immediately on error
 set -e
 
-DEPLOY_DIR="../server"
+DEPLOY_DIR="../../server"
 
 echo "📦 Installing dependencies..."
 npm install
