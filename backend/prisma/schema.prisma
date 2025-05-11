@@ -19,6 +19,8 @@ model Role {
     code        String
     name        String
     description String?
+
+    @@map("role")
 }
 
 model Sport {
@@ -30,6 +32,8 @@ model Sport {
     positions       SportPosition[]
     teams           Team[]
     statTypes       SportStatType[]
+
+    @@map("sport")
 }
 
 model SportPosition {
@@ -60,6 +64,8 @@ model Team {
     coordinator    User?  @relation(fields: [coordinatorId], references: [id])
     members    TeamMember[]
     events      Event[]
+
+    @@map("team")
 }
 
 model TeamMember {
@@ -84,6 +90,8 @@ model User {
     roleId        Int
     createdAt     DateTime @default(now())
     teams         Team[]
+
+    @@map("user")
 }
 
 model EventType {
@@ -111,6 +119,8 @@ model Event {
     eventSections EventSection[]
     eventPlayers  EventPlayer[]
     eventLogs     EventLog[]
+
+    @@map("event")
 }
 
 model EventSection {
@@ -121,6 +131,8 @@ model EventSection {
     currentSeconds Int @default(0)
     finished       Boolean @default(false)
     event          Event?  @relation(fields: [eventId], references: [id])
+
+    @@map("event_section")
 }
 
 model TrainingItem {
