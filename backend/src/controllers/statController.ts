@@ -76,7 +76,7 @@ export const fetchShootingStats = controllerWrapper(async (request: Request) => 
             const missed = period.filter((p: any) => p.code.code === 'M' && p.playerId === shooter.playerId).length
             totals.goals = totals.goals + goals
             totals.missed = totals.missed + missed
-            line.push(`${goals}/${goals + missed} (${goals ? (goals / Math.round((goals + missed)) * 100) : 0}%)`)
+            line.push(`${goals}/${goals + missed} (${goals ? Math.round((goals / (goals + missed)) * 100) : 0}%)`)
         })
         line.push(`${totals.goals}/${totals.goals + totals.missed} (${totals.goals ? Math.round((totals.goals / (totals.goals + totals.missed)) * 100) : 0}%)`)
         rows.push(line)
