@@ -7,6 +7,15 @@ const periods = 4
 
 async function splitArrayByPeriod(eventId: number) {
     const logItems = await eventRepository.fetchEventLogByEvent(eventId)
+    const positions = logItems.filter((item: any) => item.code.code === 'PS' && item.positionId)
+    logItems.filter((item: any) => !item.playerId && item.code.code !== 'PS').forEach((item: any) => {
+        const list = positions.filter((pos: any) => pos.positionId === item.positionId && pos.createdAt < item.createdAt)
+        if (list.length) {
+            const found = list[list.length - 1]
+            item.playerId = found.playerId
+            item.player - item.player
+        }
+    })
     const periods = logItems.reduce((acc: any, curr: any) => {
         if (curr.code.code === 'GE')
             acc.push([])
