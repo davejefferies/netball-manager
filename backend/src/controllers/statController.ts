@@ -1,6 +1,7 @@
 import { Request } from '@hapi/hapi'
 import { controllerWrapper } from '../utils/controllerWrapper'
 import EventRepository from '../repository/eventRepository'
+import { formatNumber } from '../utils/constants'
 
 const eventRepository = new EventRepository()
 const periods = 4
@@ -76,9 +77,9 @@ export const fetchShootingStats = controllerWrapper(async (request: Request) => 
             const missed = period.filter((p: any) => p.code.code === 'M' && p.playerId === shooter.playerId).length
             totals.goals = totals.goals + goals
             totals.missed = totals.missed + missed
-            line.push(`${goals}/${goals + missed} (${goals ? Math.round((goals / (goals + missed)) * 100) : 0}%)`)
+            line.push(`${goals}/${goals + missed} (${goals ? formatNumber((goals / (goals + missed)) * 100) : 0}%)`)
         })
-        line.push(`${totals.goals}/${totals.goals + totals.missed} (${totals.goals ? Math.round((totals.goals / (totals.goals + totals.missed)) * 100) : 0}%)`)
+        line.push(`${totals.goals}/${totals.goals + totals.missed} (${totals.goals ? formatNumber((totals.goals / (totals.goals + totals.missed)) * 100) : 0}%)`)
         rows.push(line)
     })
 
@@ -113,9 +114,9 @@ export const fetchReboundStats = controllerWrapper(async (request: Request) => {
             const loses = period.filter((p: any) => p.code.code === 'LR' && p.playerId === defender.playerId).length
             totals.gains = totals.gains + gains
             totals.loses = totals.loses + loses
-            line.push(`${gains}/${gains + loses} (${gains ? Math.round((gains / (gains + loses)) * 100) : 0}%)`)
+            line.push(`${gains}/${gains + loses} (${gains ? formatNumber((gains / (gains + loses)) * 100) : 0}%)`)
         })
-        line.push(`${totals.gains}/${totals.gains + totals.loses} (${totals.gains ? Math.round((totals.gains / (totals.gains + totals.loses)) * 100) : 0}%)`)
+        line.push(`${totals.gains}/${totals.gains + totals.loses} (${totals.gains ? formatNumber((totals.gains / (totals.gains + totals.loses)) * 100) : 0}%)`)
         rows.push(line)
     })
 

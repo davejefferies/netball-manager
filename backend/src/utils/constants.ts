@@ -19,3 +19,7 @@ export interface ITeam {
 export interface IRefreshToken {
     refreshToken: string
 }
+
+export function formatNumber(num: Number) {
+    return Number.isInteger(num) ? num : Number(num.toFixed(2));
+}
