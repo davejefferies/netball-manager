@@ -17,7 +17,12 @@ export default class EventRepository {
             },
             include: {
                 type: true,
-                team: true
+                team: true,
+                eventLogs: {
+                    where: {
+                        codeId: 44
+                    }
+                }
             },
             orderBy: [{
                 date: 'asc'
