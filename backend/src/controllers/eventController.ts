@@ -47,8 +47,8 @@ export const assignEventPlayer = controllerWrapper(async (request: Request) => {
 
 export const createEventLogItem = controllerWrapper(async (request: Request) => {
     const eventId: number = Number(request.params.eventId || 0)
-    const { codeId, positionId, playerId, period } = request.payload as any
-    const result = await eventRepository.addEventLog(eventId, codeId, period, positionId, playerId)
+    const { codeId, positionId, playerId, period, away } = request.payload as any
+    const result = await eventRepository.addEventLog(eventId, codeId, period, away, positionId, playerId)
 
     if (!result?.id) throw Boom.badRequest('An error occurred while add to the event log.')
 

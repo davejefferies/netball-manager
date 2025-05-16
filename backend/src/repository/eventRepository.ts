@@ -62,17 +62,19 @@ export default class EventRepository {
         return result
     }
 
-    async addEventLog(eventId: number, codeId: number, period: number, positionId: number | undefined, playerId: number | undefined): Promise<EventLog> {
+    async addEventLog(eventId: number, codeId: number, period: number, away: boolean | undefined, positionId: number | undefined, playerId: number | undefined): Promise<EventLog> {
         const payload: any = {
             eventId,
             codeId,
-            period
+            period,
+            away
         }
         if (positionId)
             payload.positionId = positionId
         if (playerId)
             payload.playerId = playerId
-
+        if (away)
+            payload.away = away
         const result = await db.eventLog.create({ data: payload})
 
         return result

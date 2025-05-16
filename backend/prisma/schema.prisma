@@ -42,6 +42,7 @@ model SportPosition {
     code          String
     name          String
     description   String?
+    outside       Boolean? @default(true)
     left          String?
     right         String?
     top           String?
@@ -179,6 +180,7 @@ model EventLog {
     codeId      Int
     playerId    Int?
     period      Int?
+    away        Boolean? @default(false)
     createdAt   DateTime? @default(now())
     event       Event? @relation(fields: [eventId], references: [id])
     position    SportPosition? @relation(fields: [positionId], references: [id])
