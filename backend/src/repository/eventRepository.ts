@@ -19,8 +19,11 @@ export default class EventRepository {
                 type: true,
                 team: true,
                 eventLogs: {
-                    where: {
-                        codeId: 44
+                    include: {
+                        event: true,
+                        code: true,
+                        position: true,
+                        player: true
                     }
                 }
             },

@@ -12,7 +12,18 @@ export const fetchEventTypes = controllerWrapper(async () => {
 
 export const fetchEvents = controllerWrapper(async (request: Request) => {
     const teamId: number = Number(request.params.teamId || 0)
-    return await eventRepository.fetchAllEventsByTeam(teamId)
+    const events = await eventRepository.fetchAllEventsByTeam(teamId)
+    const processedEvents: any = []
+    events.forEach(async (event: any) => {
+        let {eventLogs, ...result} = event
+        if (!eventLogs) eventLogs = []
+        result.homeScore = eventLogs.filter((item: any) => item.code.code === 'P').length
+        result.awayScore = eventLogs.filter((item: any) => item.code.code === 'PO').length
+        result.quarter = eventLogs.filter((item: any) => item.code.code === 'GE').length + 1
+        result.completed = !!eventLogs.filter((item: any) => item.code.code === 'GC').length
+        processedEvents.push(result)
+    })
+    return processedEvents
 })
 
 export const create = controllerWrapper(async (request: Request) => {
